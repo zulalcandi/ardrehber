@@ -1,0 +1,15 @@
+﻿using ArdRehber.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace ArdRehber.Data
+{
+    public class DataContext:DbContext
+    {
+        public DataContext(DbContextOptions<DataContext> options): base(options) { }
+        public DbSet<Person> Persons { get; set; }
+        public DbSet<Department> Departments { get; set; }
+
+
+
+    }
+}
