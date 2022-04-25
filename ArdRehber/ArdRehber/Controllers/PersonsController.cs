@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using ArdRehber.Data;
 using ArdRehber.Entities;
 using ArdRehber.Dtos;
+using ArdRehber.FluentValidation;
+using FluentValidation.Results;
+using FluentValidation;
 
 namespace ArdRehber.Controllers
 {
@@ -80,6 +83,22 @@ namespace ArdRehber.Controllers
         [HttpPost]
         public async Task<ActionResult<Person>> PostPerson(PersonDto personDto)
         {
+            PersonValidator personValidator = new PersonValidator();
+            ValidationResult results = personValidator.Validate(personDto);
+
+            if (results.IsValid == false)
+            {
+                return BadRequest(results.Errors[0].ErrorMessage);
+            }
+
+            var kontrolPerson = await _context.Persons.AnyAsync(s => s.Name == personDto.Name && s.SurName == personDto.SurName && s.PhoneNumber == personDto.PhoneNumber
+           && s.InternalNumber == personDto.InternalNumber && s.DepartmentId == personDto.DepartmentId);
+
+            if (kontrolPerson == true)
+            {
+                return BadRequest("Aynı kullanıcıyı tekrar ekleyemezsiniz.");
+            }
+
             var person = new Person()
             {
                 Name = personDto.Name,
@@ -95,7 +114,11 @@ namespace ArdRehber.Controllers
 
             return Ok(personDto);
             //return CreatedAtAction("GetPerson", new { id = person.Id }, person);
-        }
+
+            //PersonValidator personValidator=new PersonValidator();
+            //ValidationResult results = personValidator.Validate(person);
+            //personValidator.Validate(person);   
+        }   
 
         // DELETE: api/Persons/5
         [HttpDelete("{id}")]

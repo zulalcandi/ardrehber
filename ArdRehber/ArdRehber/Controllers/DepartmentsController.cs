@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ArdRehber.Data;
 using ArdRehber.Entities;
+using ArdRehber.Dtos;
 
 namespace ArdRehber.Controllers
 {
@@ -77,11 +78,32 @@ namespace ArdRehber.Controllers
         // POST: api/Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        public async Task<ActionResult<Department>> PostDepartment(DepartmentDto departmentDto)
         {
+            var kontrolDepartment = await _context.Departments.AnyAsync(s => s.DepartmentName == departmentDto.DepartmentName);
+
+            if (kontrolDepartment == true)
+            {
+                return BadRequest("Böyle bir departman zaten var");
+            }
+
+            var department = new Department()
+            {
+                DepartmentName = departmentDto.DepartmentName,
+
+            };
             _context.Departments.Add(department);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetDepartment", new { id = department.DepartmentId }, department);
+
+            departmentDto.DepartmentId = department.DepartmentId;
+
+            return Ok(departmentDto);
+
+
+
+            //_context.Departments.Add(department);
+            //await _context.SaveChangesAsync();
+            //return CreatedAtAction("GetDepartment", new { id = department.DepartmentId }, department);
         }
 
         // DELETE: api/Departments/5
