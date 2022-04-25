@@ -92,7 +92,10 @@ namespace ArdRehber.Controllers
             _context.Persons.Add(person);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPerson", new { id = person.Id }, person);
+            personDto.Id = person.Id;
+
+            return Ok(personDto);
+            //return CreatedAtAction("GetPerson", new { id = person.Id }, person);
         }
 
         // DELETE: api/Persons/5

@@ -20,8 +20,8 @@ namespace ArdRehber.Entities
 
        
        public virtual Department Department { get; set; }
-        
-        
-        
+
+
+        public int DepartmentId { get; set; }
     }
 }

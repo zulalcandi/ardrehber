@@ -81,7 +81,6 @@ namespace ArdRehber.Controllers
         {
             _context.Departments.Add(department);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetDepartment", new { id = department.DepartmentId }, department);
         }
 
