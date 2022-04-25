@@ -80,14 +80,13 @@ namespace ArdRehber.Controllers
         [HttpPost]
         public async Task<ActionResult<Person>> PostPerson(PersonDto personDto)
         {
-            var departman = _context.Departments.Where(a => a.DepartmentId == personDto.DepartmentId).FirstOrDefault();
             var person = new Person()
             {
                 Name = personDto.Name,
                 SurName = personDto.SurName,
                 PhoneNumber = personDto.PhoneNumber,
                 InternalNumber = personDto.InternalNumber,
-                Department = departman
+                DepartmentId = personDto.DepartmentId
             };
             _context.Persons.Add(person);
             await _context.SaveChangesAsync();

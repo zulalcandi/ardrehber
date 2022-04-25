@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ArdRehber.Entities
 {
@@ -18,10 +19,9 @@ namespace ArdRehber.Entities
         [StringLength(4)]
         public string InternalNumber { get; set; }
 
-       
-       public virtual Department Department { get; set; }
-
-
         public int DepartmentId { get; set; }
+
+        [ForeignKey("DepartmentId")]
+        public virtual Department Department { get; set; }
     }
 }
