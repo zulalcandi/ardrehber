@@ -9,9 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using ArdRehber.Data;
 using ArdRehber.Entities;
 using ArdRehber.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ArdRehber.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentsController : ControllerBase

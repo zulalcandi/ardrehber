@@ -28,8 +28,8 @@ namespace ArdRehber.Controllers
 
 
 
-        // POST: api/Logins
-        // To protect from overposting attacks, see ttps://go.microsoft.com/fwlink/?linkid=2123754
+    // POST: api/Logins
+    // To protect from overposting attacks, see ttps://go.microsoft.com/fwlink/?linkid=2123754
     //    [HttpPost]
     //    public async Task<ActionResult<User>> PostLogin(LoginDto loginDto )
     //    {
@@ -73,6 +73,7 @@ namespace ArdRehber.Controllers
         [HttpPost("[action]")]
         public async Task<bool> Create([FromForm] User user)
         {
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return true;
@@ -80,7 +81,7 @@ namespace ArdRehber.Controllers
         [HttpPost("action")]
         public async Task<Entities.Token> Login([FromForm] LoginDto loginDto)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == loginDto.UserName && x.Password == loginDto.Password);
+            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email && x.Password == loginDto.Password);
             if (user != null)
             {
                 //Token üretiliyor.
@@ -88,6 +89,23 @@ namespace ArdRehber.Controllers
                 Token token = tokenHandler.CreateAccessToken(user);
 
                 //Refresh token Users tablosuna işleniyor.
+                user.RefreshToken = token.RefreshToken;
+                user.RefreshTokenEndDate = token.Expiration.AddMinutes(3);
+                await _context.SaveChangesAsync();
+
+                return token;
+            }
+            return null;
+        }
+        [HttpGet("[action]")]
+        public async Task<Token> RefreshTokenLogin([FromForm] string refreshToken)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+            if (user != null && user?.RefreshTokenEndDate > DateTime.Now)
+            {
+                TokenHandler tokenHandler = new TokenHandler(_configuration);
+                Token token = tokenHandler.CreateAccessToken(user);
+
                 user.RefreshToken = token.RefreshToken;
                 user.RefreshTokenEndDate = token.Expiration.AddMinutes(3);
                 await _context.SaveChangesAsync();

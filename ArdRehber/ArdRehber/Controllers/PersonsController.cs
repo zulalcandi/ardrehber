@@ -12,9 +12,11 @@ using ArdRehber.Dtos;
 using ArdRehber.FluentValidation;
 using FluentValidation.Results;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ArdRehber.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonsController : ControllerBase

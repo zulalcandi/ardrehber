@@ -37,7 +37,7 @@ namespace ArdRehber.Migrations
 
                     b.HasKey("DepartmentId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("ArdRehber.Entities.Person", b =>
@@ -75,7 +75,7 @@ namespace ArdRehber.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Persons");
+                    b.ToTable("Persons", (string)null);
                 });
 
             modelBuilder.Entity("ArdRehber.Entities.User", b =>
@@ -111,7 +111,7 @@ namespace ArdRehber.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ArdRehber.Entities.Person", b =>
