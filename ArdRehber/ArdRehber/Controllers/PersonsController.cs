@@ -106,6 +106,7 @@ namespace ArdRehber.Controllers
                 PhoneNumber = personDto.PhoneNumber,
                 InternalNumber = personDto.InternalNumber,
                 DepartmentId = personDto.DepartmentId
+                
             };
             _context.Persons.Add(person);
             await _context.SaveChangesAsync();

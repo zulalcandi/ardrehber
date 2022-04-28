@@ -1,4 +1,4 @@
-﻿using ArdRehber.Entities;
+﻿ using ArdRehber.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ArdRehber.Data
@@ -8,6 +8,9 @@ namespace ArdRehber.Data
         public DataContext(DbContextOptions<DataContext> options): base(options) { }
         public DbSet<Person> Persons { get; set; }
         public DbSet<Department> Departments { get; set; }
+        //public DbSet<UserType> UserTypes { get; set; }
+        public DbSet<User> Users { get; set; }
+        
 
 
 
