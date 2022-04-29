@@ -79,7 +79,7 @@ namespace ArdRehber.Controllers
             return true;
         }
         [HttpPost("action")]
-        public async Task<Entities.Token> Login([FromForm] LoginDto loginDto)
+        public async Task<Token> Login([FromForm] LoginDto loginDto)
         {
             User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email && x.Password == loginDto.Password);
             if (user != null)

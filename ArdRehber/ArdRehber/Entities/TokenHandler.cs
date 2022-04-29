@@ -13,7 +13,7 @@ namespace ArdRehber.Entities
             Configuration = configuration;
         }
         //Token üretecek metot.
-        public Entities.Token CreateAccessToken(User user)
+        public Token CreateAccessToken(User user)
         {
             Token tokenInstance = new Token();
 
