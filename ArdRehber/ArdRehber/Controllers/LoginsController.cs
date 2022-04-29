@@ -70,14 +70,7 @@ namespace ArdRehber.Controllers
             _context = content;
             _configuration = configuration;
         }
-        [HttpPost("[action]")]
-        public async Task<bool> Create([FromForm] User user)
-        {
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+        
         [HttpPost("action")]
         public async Task<Token> Login([FromForm] LoginDto loginDto)
         {
