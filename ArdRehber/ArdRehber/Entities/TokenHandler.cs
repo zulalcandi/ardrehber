@@ -19,9 +19,9 @@ namespace ArdRehber.Entities
             Token tokenInstance = new Token();
 
             var someClaims = new Claim[]{
-               // new Claim(JwtRegisteredClaimNames.UniqueName,Name),
-                new Claim(JwtRegisteredClaimNames.Email,"heimdall@mail.com"),
-               // new Claim(JwtRegisteredClaimNames.NameId,Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Typ,"User"),
+                new Claim(JwtRegisteredClaimNames.Email,user.Email),
+             
             };
 
             //Security  Key'in simetriğini alıyoruz.
@@ -33,10 +33,11 @@ namespace ArdRehber.Entities
             //Oluşturulacak token ayarlarını veriyoruz.
             tokenInstance.Expiration = DateTime.Now.AddHours(5);
             JwtSecurityToken securityToken = new JwtSecurityToken(
-                issuer: Configuration["Token:Issuer"],
-                audience: Configuration["Token:Audience"],
+                issuer: Configuration["Token:Issuer"],    // buradaki configuration düzeltilecek.
+                audience: Configuration["Token:Audience"],  // buradaki configuration düzeltilecek.
                 expires: tokenInstance.Expiration,//Token süresini 5 saat olarak belirliyorum
                 notBefore: DateTime.Now,//Token üretildikten ne kadar süre sonra devreye girsin ayarlıyouz.
+                claims:someClaims,
                 signingCredentials: signingCredentials
                 );
 

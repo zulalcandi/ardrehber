@@ -96,6 +96,7 @@ namespace ArdRehber.Controllers
                 Surname = userDto.Surname,
                 Email = userDto.Email,
                 Password = userDto.Password,
+                UserType="User",
                //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
                // RefreshTokenEndDate =new DateTime( 2022,5,29)
 

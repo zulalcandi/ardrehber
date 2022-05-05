@@ -51,10 +51,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience=true,
         ValidateLifetime=true,
         ValidateIssuerSigningKey=true,
-        ValidIssuer=builder.Configuration["Token:Issuer"],
-        ValidAudience=builder.Configuration["Token:Audience"],
-        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),
-        ClockSkew=TimeSpan.Zero
+        ValidIssuer=builder.Configuration["Token:Issuer"], // buradaki configuration düzeltilecek.
+        ValidAudience=builder.Configuration["Token:Audience"], // buradaki configuration düzeltilecek.
+        IssuerSigningKey =new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),// buradaki configuration düzeltilecek.
+        ClockSkew =TimeSpan.Zero
         
     };
 });

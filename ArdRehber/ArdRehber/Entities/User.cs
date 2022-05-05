@@ -12,6 +12,7 @@
 
             public DateTime? RefreshTokenEndDate { get; set; }
 
+            public string UserType { get; set; }
 
     }
 }
