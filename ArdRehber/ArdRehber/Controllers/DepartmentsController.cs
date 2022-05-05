@@ -29,7 +29,7 @@ namespace ArdRehber.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
-            return await _context.Departments.Include(x=>x.Persons).ToListAsync();
+            return await _context.Departments.Include(x=>x.Persons).ToListAsync(); // INCLUDE BURADA YAPILDI.
         }
 
         // GET: api/Departments/5

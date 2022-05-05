@@ -10,6 +10,7 @@ using ArdRehber.Data;
 using ArdRehber.Entities;
 using ArdRehber.Dtos;
 using System.Security.Claims;
+using System.Web.Helpers;
 
 namespace ArdRehber.Controllers
 {
@@ -105,8 +106,6 @@ namespace ArdRehber.Controllers
 
             return Ok(user);
         }
-
-
 
         
 

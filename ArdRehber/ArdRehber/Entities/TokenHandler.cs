@@ -25,10 +25,10 @@ namespace ArdRehber.Entities
 
             //Oluşturulacak token ayarlarını veriyoruz.
             tokenInstance.Expiration = DateTime.Now.AddHours(5);
-            JwtSecurityToken securityToken = new JwtSecurityToken(
+            JwtSecurityToken securityToken = new JwtSecurityToken(                
                 issuer: Configuration["Token:Issuer"],
                 audience: Configuration["Token:Audience"],
-                expires: tokenInstance.Expiration,//Token süresini 5 dk olarak belirliyorum
+                expires: tokenInstance.Expiration,//Token süresini 5 saat olarak belirliyorum
                 notBefore: DateTime.Now,//Token üretildikten ne kadar süre sonra devreye girsin ayarlıyouz.
                 signingCredentials: signingCredentials
                 );
