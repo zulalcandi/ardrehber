@@ -11,6 +11,7 @@ using ArdRehber.Entities;
 using ArdRehber.Dtos;
 using System.Security.Claims;
 using System.Web.Helpers;
+using System.Security.Cryptography;
 
 namespace ArdRehber.Controllers
 {
@@ -95,8 +96,8 @@ namespace ArdRehber.Controllers
                 Surname = userDto.Surname,
                 Email = userDto.Email,
                 Password = userDto.Password,
-                RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
-                RefreshTokenEndDate=new DateTime( 2022,5,29)
+               //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
+               // RefreshTokenEndDate =new DateTime( 2022,5,29)
 
             };
             _context.Users.Add(user);
@@ -107,7 +108,7 @@ namespace ArdRehber.Controllers
             return Ok(user);
         }
 
-        
+
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -17,6 +18,12 @@ namespace ArdRehber.Entities
         {
             Token tokenInstance = new Token();
 
+            var someClaims = new Claim[]{
+               // new Claim(JwtRegisteredClaimNames.UniqueName,Name),
+                new Claim(JwtRegisteredClaimNames.Email,"heimdall@mail.com"),
+               // new Claim(JwtRegisteredClaimNames.NameId,Guid.NewGuid().ToString())
+            };
+
             //Security  Key'in simetriğini alıyoruz.
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:SecurityKey"]));
 
@@ -25,7 +32,7 @@ namespace ArdRehber.Entities
 
             //Oluşturulacak token ayarlarını veriyoruz.
             tokenInstance.Expiration = DateTime.Now.AddHours(5);
-            JwtSecurityToken securityToken = new JwtSecurityToken(                
+            JwtSecurityToken securityToken = new JwtSecurityToken(
                 issuer: Configuration["Token:Issuer"],
                 audience: Configuration["Token:Audience"],
                 expires: tokenInstance.Expiration,//Token süresini 5 saat olarak belirliyorum
