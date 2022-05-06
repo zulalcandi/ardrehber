@@ -104,7 +104,7 @@ namespace ArdRehber.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            //userDto.Id = user.Id;
+            //userDto.Id = user.Id; sss
 
             return Ok(user);
         }
