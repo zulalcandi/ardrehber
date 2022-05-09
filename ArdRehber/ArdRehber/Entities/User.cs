@@ -16,7 +16,7 @@ namespace ArdRehber.Entities
             public string RefreshToken { get; set; }=String.Empty;
             public DateTime? RefreshTokenEndDate { get; set; }
 
-        public Nullable<int> UserTypeId { get; set; } = null;
+            public Nullable<int> UserTypeId { get; set; } = null;
 
            //[ForeignKey("UserTypeId")]
             public virtual UserType UserType { get; set; }
