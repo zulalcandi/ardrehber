@@ -83,7 +83,7 @@ namespace ArdRehber.Controllers
         public async Task<IActionResult> Create([FromForm] UserDto userDto)
         {
             //int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email );//&& s.PasswordHash==userDto.Password );
+            var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email );
 
             if (kontrolUser == true)
             {
