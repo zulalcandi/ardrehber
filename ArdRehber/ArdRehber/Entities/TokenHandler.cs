@@ -19,7 +19,8 @@ namespace ArdRehber.Entities
             Token tokenInstance = new Token();
 
             var someClaims = new Claim[]{
-                new Claim(JwtRegisteredClaimNames.Typ,"User"),
+                new Claim(JwtRegisteredClaimNames.Typ,user.UserTypeId.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName,user.UserType.UserTypeName),
                 new Claim(JwtRegisteredClaimNames.Email,user.Email),
              
             };

@@ -4,6 +4,7 @@ using ArdRehber.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArdRehber.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220509100555_dene")]
+    partial class dene
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,14 +73,9 @@ namespace ArdRehber.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("UserTypeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("UserTypeId");
 
                     b.ToTable("Persons");
                 });
@@ -153,13 +150,7 @@ namespace ArdRehber.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ArdRehber.Entities.UserType", "UserType")
-                        .WithMany("Persons")
-                        .HasForeignKey("UserTypeId");
-
                     b.Navigation("Department");
-
-                    b.Navigation("UserType");
                 });
 
             modelBuilder.Entity("ArdRehber.Entities.User", b =>
@@ -178,8 +169,6 @@ namespace ArdRehber.Migrations
 
             modelBuilder.Entity("ArdRehber.Entities.UserType", b =>
                 {
-                    b.Navigation("Persons");
-
                     b.Navigation("Users");
                 });
 #pragma warning restore 612, 618

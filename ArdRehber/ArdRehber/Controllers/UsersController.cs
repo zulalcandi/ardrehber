@@ -83,7 +83,7 @@ namespace ArdRehber.Controllers
         public async Task<IActionResult> Create([FromForm] UserDto userDto)
         {
             //int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email && s.Password == userDto.Password);
+            var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email );//&& s.PasswordHash==userDto.Password );
 
             if (kontrolUser == true)
             {
@@ -95,21 +95,35 @@ namespace ArdRehber.Controllers
                 Name = userDto.Name,
                 Surname = userDto.Surname,
                 Email = userDto.Email,
-                Password = userDto.Password,
-                UserType="User",
+                // Password=userDto.Password,
+                UserTypeId = 1                 
+                 
                //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
                // RefreshTokenEndDate =new DateTime( 2022,5,29)
 
             };
+
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            //userDto.Id = user.Id; sss
+            //userDto.Id = user.Id; 
 
             return Ok(user);
         }
-
-
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
@@ -131,5 +145,7 @@ namespace ArdRehber.Controllers
         {
             return _context.Users.Any(e => e.Id == id);
         }
+
+
     }
 }

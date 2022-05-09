@@ -1,4 +1,6 @@
-﻿namespace ArdRehber.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ArdRehber.Entities
 {
     public class User
     {
@@ -7,10 +9,20 @@
             public string Name { get; set; }
             public string Surname { get; set; }
             public string Email { get; set; }
-            public string Password { get; set; }
+           // public string Password { get; set; }
+            public byte[] PasswordHash { get; set; } 
+            public byte[] PasswordSalt { get; set; }
+
             public string RefreshToken { get; set; }=String.Empty;
             public DateTime? RefreshTokenEndDate { get; set; }
-            public string UserType { get; set; }
+
+        public Nullable<int> UserTypeId { get; set; } = null;
+
+           //[ForeignKey("UserTypeId")]
+            public virtual UserType UserType { get; set; }
+
+
+
 
     }
 }

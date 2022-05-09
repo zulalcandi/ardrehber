@@ -4,6 +4,7 @@ using ArdRehber.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArdRehber.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220506105810_salt")]
+    partial class salt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,14 +73,9 @@ namespace ArdRehber.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("UserTypeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DepartmentId");
-
-                    b.HasIndex("UserTypeId");
 
                     b.ToTable("Persons");
                 });
@@ -96,6 +93,10 @@ namespace ArdRehber.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -118,31 +119,13 @@ namespace ArdRehber.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserTypeId");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ArdRehber.Entities.UserType", b =>
-                {
-                    b.Property<int?>("UserTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("UserTypeId"), 1L, 1);
-
-                    b.Property<string>("UserTypeName")
+                    b.Property<string>("UserType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserTypeId");
+                    b.HasKey("Id");
 
-                    b.ToTable("UserTypes");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ArdRehber.Entities.Person", b =>
@@ -153,34 +136,12 @@ namespace ArdRehber.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ArdRehber.Entities.UserType", "UserType")
-                        .WithMany("Persons")
-                        .HasForeignKey("UserTypeId");
-
                     b.Navigation("Department");
-
-                    b.Navigation("UserType");
-                });
-
-            modelBuilder.Entity("ArdRehber.Entities.User", b =>
-                {
-                    b.HasOne("ArdRehber.Entities.UserType", "UserType")
-                        .WithMany("Users")
-                        .HasForeignKey("UserTypeId");
-
-                    b.Navigation("UserType");
                 });
 
             modelBuilder.Entity("ArdRehber.Entities.Department", b =>
                 {
                     b.Navigation("Persons");
-                });
-
-            modelBuilder.Entity("ArdRehber.Entities.UserType", b =>
-                {
-                    b.Navigation("Persons");
-
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

@@ -107,7 +107,8 @@ namespace ArdRehber.Controllers
                 SurName = personDto.SurName,
                 PhoneNumber = personDto.PhoneNumber,
                 InternalNumber = personDto.InternalNumber,
-                DepartmentId = personDto.DepartmentId
+                DepartmentId = personDto.DepartmentId,
+                UserTypeId=2
                 
             };
             _context.Persons.Add(person);

@@ -74,9 +74,12 @@ namespace ArdRehber.Controllers
         [HttpPost("action")]
         public async Task<Token> Login([FromForm] LoginDto loginDto)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email && x.Password == loginDto.Password);
+            User user = await _context.Users.Include(x => x.UserType).FirstOrDefaultAsync(x => x.Email == loginDto.Email);
             if (user != null)
             {
+                if (!VerifyPassword(loginDto.Password, user.PasswordHash, user.PasswordSalt))
+                    return null;
+
                 //Token üretiliyor.
                 TokenHandler tokenHandler = new TokenHandler(_configuration);
                 Token token = tokenHandler.CreateAccessToken(user);
@@ -92,6 +95,20 @@ namespace ArdRehber.Controllers
             }
             return null;
         }
+
+        private bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)); // Create hash using password salt.
+                for (int i = 0; i < computedHash.Length; i++)
+                { // Loop through the byte array
+                    if (computedHash[i] != passwordHash[i]) return false; // if mismatch
+                }
+            }
+            return true; //if no mismatches.
+        }
+
         [HttpGet("[action]")]
         public async Task<Token> RefreshTokenLogin([FromForm] string refreshToken)
         {
@@ -109,5 +126,7 @@ namespace ArdRehber.Controllers
             }
             return null;
         }
+
+       
     }
 }
