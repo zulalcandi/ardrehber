@@ -12,9 +12,11 @@ using ArdRehber.Dtos;
 using System.Security.Claims;
 using System.Web.Helpers;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ArdRehber.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

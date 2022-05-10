@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ArdRehber.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonsController : ControllerBase
@@ -51,6 +51,7 @@ namespace ArdRehber.Controllers
 
         // PUT: api/Persons/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPerson(int id, Person person)
         {
@@ -82,6 +83,7 @@ namespace ArdRehber.Controllers
 
         // POST: api/Persons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Person>> PostPerson(PersonDto personDto)
         {
@@ -122,9 +124,10 @@ namespace ArdRehber.Controllers
             //PersonValidator personValidator=new PersonValidator();
             //ValidationResult results = personValidator.Validate(person);
             //personValidator.Validate(person);   
-        }   
+        }
 
         // DELETE: api/Persons/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePerson(int id)
         {
