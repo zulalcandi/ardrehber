@@ -22,6 +22,9 @@ namespace ArdRehber.Repositories.concrete
 
             return user;
         }
+
+
+
         //private bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
         //{
         //    using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
