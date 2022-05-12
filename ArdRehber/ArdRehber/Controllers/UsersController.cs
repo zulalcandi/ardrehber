@@ -13,6 +13,9 @@ using System.Security.Claims;
 using System.Web.Helpers;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
+using ArdRehber.FluentValidation;
+using FluentValidation.Results;
+
 
 namespace ArdRehber.Controllers
 {
@@ -84,6 +87,15 @@ namespace ArdRehber.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Create([FromForm] UserDto userDto)
         {
+
+            UserValidator userValidator = new UserValidator();
+            ValidationResult results = userValidator.Validate(userDto);
+
+            if (results.IsValid == false)
+            {
+                return BadRequest(results.Errors[0].ErrorMessage);
+            }
+
             //int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email );
 

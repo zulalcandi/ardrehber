@@ -28,6 +28,61 @@ namespace ArdRehber.Controllers
             _context = context;
         }
 
+        private async Task<Person> AddPerson(PersonDto personDto)
+        {
+            var kontrolPerson = await _context.Persons.AnyAsync(s => s.Name == personDto.Name && s.SurName == personDto.SurName && s.PhoneNumber == personDto.PhoneNumber
+         && s.InternalNumber == personDto.InternalNumber && s.DepartmentId == personDto.DepartmentId);
+
+            if (kontrolPerson == true)
+            {
+                return null;
+            }
+
+            var person = new Person()
+            {
+                Name = personDto.Name,
+                SurName = personDto.SurName,
+                PhoneNumber = personDto.PhoneNumber,
+                InternalNumber = personDto.InternalNumber,
+                DepartmentId = personDto.DepartmentId,
+                UserTypeId = 2
+
+            };
+
+
+            _context.Persons.Add(person);
+            await _context.SaveChangesAsync();
+            return person;
+        }
+
+        private async Task<Person> UpdatePerson(PersonDto personDto)
+        {
+            var entity = _context.Persons.FirstOrDefault(e => e.Id == personDto.Id);
+
+            entity.Id = personDto.Id;
+            entity.Name = personDto.Name;
+            entity.SurName = personDto.SurName;
+            entity.PhoneNumber = personDto.PhoneNumber;
+            entity.InternalNumber = personDto.InternalNumber;
+            entity.DepartmentId = personDto.DepartmentId;
+            entity.UserTypeId = 2;
+            //var person = new Person()
+            //{
+            //    Id = personDto.Id,
+            //    Name = personDto.Name,
+            //    SurName = personDto.SurName,
+            //    PhoneNumber = personDto.PhoneNumber,
+            //    InternalNumber = personDto.InternalNumber,
+            //    DepartmentId = personDto.DepartmentId,
+            //    UserTypeId = 2
+
+            //};
+            _context.Persons.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
+
         // GET: api/Persons
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetPersons()
@@ -49,37 +104,7 @@ namespace ArdRehber.Controllers
             return person;
         }
 
-        // PUT: api/Persons/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPerson(int id, Person person)
-        {
-            if (id != person.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(person).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PersonExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
+        
 
         // POST: api/Persons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -95,30 +120,29 @@ namespace ArdRehber.Controllers
                 return BadRequest(results.Errors[0].ErrorMessage);
             }
 
-            var kontrolPerson = await _context.Persons.AnyAsync(s => s.Name == personDto.Name && s.SurName == personDto.SurName && s.PhoneNumber == personDto.PhoneNumber
-           && s.InternalNumber == personDto.InternalNumber && s.DepartmentId == personDto.DepartmentId);
-
-            if (kontrolPerson == true)
+            
+            if (personDto.Id > 0)
             {
-                return BadRequest("Aynı kullanıcıyı tekrar ekleyemezsiniz.");
+                var person = this.UpdatePerson(personDto).Result;
+              //  personDto.Id = person.Id;
+
+            }
+            else
+            {
+                var person = this.AddPerson(personDto).Result;
+                if (person==null)
+                {
+                    return BadRequest("Aynı kişiyi tekrar ekleyemezsiniz.");
+                }
+
+                personDto.Id = person.Id;
             }
 
-            var person = new Person()
-            {
-                Name = personDto.Name,
-                SurName = personDto.SurName,
-                PhoneNumber = personDto.PhoneNumber,
-                InternalNumber = personDto.InternalNumber,
-                DepartmentId = personDto.DepartmentId,
-                UserTypeId=2
-                
-            };
-            _context.Persons.Add(person);
-            await _context.SaveChangesAsync();
 
-            personDto.Id = person.Id;
+            // else => ekleme
 
             return Ok(personDto);
+
             //return CreatedAtAction("GetPerson", new { id = person.Id }, person);
 
             //PersonValidator personValidator=new PersonValidator();
