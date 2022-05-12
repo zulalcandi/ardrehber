@@ -10,6 +10,8 @@ using ArdRehber.Data;
 using ArdRehber.Entities;
 using ArdRehber.Dtos;
 using Microsoft.AspNetCore.Authorization;
+using ArdRehber.FluentValidation;
+using FluentValidation.Results;
 
 namespace ArdRehber.Controllers
 {
@@ -23,6 +25,40 @@ namespace ArdRehber.Controllers
         public DepartmentsController(DataContext context)
         {
             _context = context;
+        }
+
+        private async Task<Department> AddDepartment(DepartmentDto departmentDto)
+        {
+            var kontrolDepartment = await _context.Departments.AnyAsync(s => s.DepartmentName == departmentDto.DepartmentName);
+
+            if (kontrolDepartment == true)
+            {
+                return null;
+            }
+
+            var department = new Department()
+            {
+                
+                DepartmentName = departmentDto.DepartmentName,
+               
+            };
+
+
+            _context.Departments.Add(department);
+            await _context.SaveChangesAsync();
+            return department;
+        }
+
+        private async Task<Department> UpdateDepartment(DepartmentDto departmentDto)
+        {
+            var entity = _context.Departments.FirstOrDefault(e => e.DepartmentId == departmentDto.DepartmentId);
+
+            entity.DepartmentId = departmentDto.DepartmentId;
+            entity.DepartmentName = departmentDto.DepartmentName;
+           
+            _context.Departments.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         // GET: api/Departments
@@ -46,59 +82,38 @@ namespace ArdRehber.Controllers
             return department;
         }
 
-        // PUT: api/Departments/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartment(int id, Department department)
-        {
-            if (id != department.DepartmentId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(department).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DepartmentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
+        
         // POST: api/Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Department>> PostDepartment(DepartmentDto departmentDto)
         {
-            var kontrolDepartment = await _context.Departments.AnyAsync(s => s.DepartmentName == departmentDto.DepartmentName);
 
-            if (kontrolDepartment == true)
+            DepartmentValidator departmentValidator = new DepartmentValidator();
+            ValidationResult results = departmentValidator.Validate(departmentDto);
+
+            if (results.IsValid == false)
             {
-                return BadRequest("Böyle bir departman zaten var");
+                return BadRequest(results.Errors[0].ErrorMessage);
             }
 
-            var department = new Department()
+            if (departmentDto.DepartmentId > 0)
             {
-                DepartmentName = departmentDto.DepartmentName,
+                var department = this.UpdateDepartment(departmentDto).Result;
+               
 
-            };
-            _context.Departments.Add(department);
-            await _context.SaveChangesAsync();
+            }
+            else
+            {
+                var department = this.AddDepartment(departmentDto).Result;
+                if (department == null)
+                {
+                    return BadRequest("Böyle bir departman zaten var.");
+                }
 
-            departmentDto.DepartmentId = department.DepartmentId;
-
+                departmentDto.DepartmentId = department.DepartmentId;
+            }
+                      
             return Ok(departmentDto);
 
 
