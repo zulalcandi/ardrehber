@@ -13,20 +13,6 @@ using ArdRehber.Dtos;
 
 namespace ArdRehber.Controllers
 {
-    //[Route("api/[controller]")]
-    //[ApiController]
-    //public class LoginsController : ControllerBase
-    //{
-    //    private readonly DataContext _context;
-
-    //    public LoginsController(DataContext context)
-    //    {
-    //        _context = context;
-    //    }
-
-
-
-
 
     // POST: api/Logins
     // To protect from overposting attacks, see ttps://go.microsoft.com/fwlink/?linkid=2123754

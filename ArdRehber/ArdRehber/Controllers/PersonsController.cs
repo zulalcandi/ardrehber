@@ -66,17 +66,7 @@ namespace ArdRehber.Controllers
             entity.InternalNumber = personDto.InternalNumber;
             entity.DepartmentId = personDto.DepartmentId;
             entity.UserTypeId = 2;
-            //var person = new Person()
-            //{
-            //    Id = personDto.Id,
-            //    Name = personDto.Name,
-            //    SurName = personDto.SurName,
-            //    PhoneNumber = personDto.PhoneNumber,
-            //    InternalNumber = personDto.InternalNumber,
-            //    DepartmentId = personDto.DepartmentId,
-            //    UserTypeId = 2
-
-            //};
+            
             _context.Persons.Update(entity);
             await _context.SaveChangesAsync();
             return entity;
