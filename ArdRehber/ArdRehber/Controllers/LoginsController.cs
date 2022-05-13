@@ -61,7 +61,7 @@ namespace ArdRehber.Controllers
 
 
         [HttpPost("action")]
-        public async Task<Token> Login([FromForm] LoginDto loginDto)
+        public async Task<Token> Login([FromBody] LoginDto loginDto)
         {
             User user = await _context.Users.Include(x => x.UserType).FirstOrDefaultAsync(x => x.Email == loginDto.Email);
             if (user != null)
