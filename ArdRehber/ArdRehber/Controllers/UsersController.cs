@@ -16,13 +16,14 @@ using Microsoft.AspNetCore.Authorization;
 using ArdRehber.FluentValidation;
 using FluentValidation.Results;
 using System.IdentityModel.Tokens.Jwt;
+using ArdRehber.Enums;
 
 namespace ArdRehber.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
         private readonly DataContext _context;
 
@@ -35,111 +36,92 @@ namespace ArdRehber.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            EUserType userTyp = GetUserType();
+            if (userTyp == EUserType.Admin)
+            {
+                return await _context.Users.ToListAsync();
+            }
+            else
+            {
+                return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
+            }
+
+
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
+            EUserType userTyp = GetUserType();
+            if (userTyp == EUserType.Admin)
             {
-                return NotFound();
+                var user = await _context.Users.FindAsync(id);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                return user;
+            }
+            else
+            {
+                return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
             }
 
-            return user;
+
         }
-
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutUser(int id, User user)
-        //{
-        //    if (id != user.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    _context.Entry(user).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!UserExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
-
 
         [HttpPost("[action]")]
 
         public async Task<IActionResult> Create([FromForm] UserDto userDto)
         {
-            var token = string.Empty;
-            var header = (string)HttpContext.Request.Headers["Authorization"];
-            if(header!=null) { token=header.Substring(7);}
-
-            var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken =handler.ReadJwtToken(token);
-            //  Console.WriteLine(jwtSecurityToken);
-           int userTyp=int.Parse(jwtSecurityToken.Claims.First(claim => claim.Type == "typ").Value);
-            if (userTyp==1)
+            EUserType userTyp = GetUserType();
+            if (userTyp == EUserType.Admin)
             {
-           
-            UserValidator userValidator = new UserValidator();
-            ValidationResult results = userValidator.Validate(userDto);
 
-            if (results.IsValid == false)
-            {
-                return BadRequest(results.Errors[0].ErrorMessage);
-            }
+                UserValidator userValidator = new UserValidator();
+                ValidationResult results = userValidator.Validate(userDto);
 
-            //int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email );
+                if (results.IsValid == false)
+                {
+                    return BadRequest(results.Errors[0].ErrorMessage);
+                }
 
-            if (kontrolUser == true)
-            {
-                return BadRequest("Aynı kullanıcıyı tekrar ekleyemezsiniz.");
-            }
+                //int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email);
 
-            var user = new User()
-            {
-                Name = userDto.Name,
-                Surname = userDto.Surname,
-                Email = userDto.Email,
-                // Password=userDto.Password,
-                UserTypeId=userDto.UserTypeId           
-                 
-               //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
-               // RefreshTokenEndDate =new DateTime( 2022,5,29)
+                if (kontrolUser == true)
+                {
+                    return BadRequest("Aynı kullanıcıyı tekrar ekleyemezsiniz.");
+                }
 
-            };
+                var user = new User()
+                {
+                    Name = userDto.Name,
+                    Surname = userDto.Surname,
+                    Email = userDto.Email,
+                    // Password=userDto.Password,
+                    UserTypeId = userDto.UserTypeId
 
-            byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
+                    //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
+                    // RefreshTokenEndDate =new DateTime( 2022,5,29)
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+                };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+                byte[] passwordHash, passwordSalt;
+                CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
 
-            //userDto.Id = user.Id; 
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
 
-            return Ok(user);
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                //userDto.Id = user.Id; 
+
+                return Ok(user);
 
             }
             else
@@ -160,16 +142,25 @@ namespace ArdRehber.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            EUserType userTyp = GetUserType();
+            if (userTyp == EUserType.Admin)
             {
-                return NotFound();
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool UserExists(int id)

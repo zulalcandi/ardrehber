@@ -13,13 +13,14 @@ using ArdRehber.FluentValidation;
 using FluentValidation.Results;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using ArdRehber.Enums;
 
 namespace ArdRehber.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonsController : ControllerBase
+    public class PersonsController : BaseController
     {
         private readonly DataContext _context;
 
@@ -104,42 +105,51 @@ namespace ArdRehber.Controllers
         [HttpPost]
         public async Task<ActionResult<Person>> PostPerson(PersonDto personDto)
         {
-            PersonValidator personValidator = new PersonValidator();
-            ValidationResult results = personValidator.Validate(personDto);
-
-            if (results.IsValid == false)
+            EUserType userTyp = GetUserType();
+            if (userTyp == EUserType.Admin)
             {
-                return BadRequest(results.Errors[0].ErrorMessage);
-            }
+                PersonValidator personValidator = new PersonValidator();
+                ValidationResult results = personValidator.Validate(personDto);
 
-            
-            if (personDto.Id > 0)
-            {
-                var person = this.UpdatePerson(personDto).Result;
-              //  personDto.Id = person.Id;
+                if (results.IsValid == false)
+                {
+                    return BadRequest(results.Errors[0].ErrorMessage);
+                }
 
+
+                if (personDto.Id > 0)
+                {
+                    var person = this.UpdatePerson(personDto).Result;
+                    //  personDto.Id = person.Id;
+
+                }
+                else
+                {
+                    var person = this.AddPerson(personDto).Result;
+                    if (person == null)
+                    {
+                        return BadRequest("Aynı kişiyi tekrar ekleyemezsiniz.");
+                    }
+
+                    personDto.Id = person.Id;
+                }
+
+
+                // else => ekleme
+
+                return Ok(personDto);
+
+                //return CreatedAtAction("GetPerson", new { id = person.Id }, person);
+
+                //PersonValidator personValidator=new PersonValidator();
+                //ValidationResult results = personValidator.Validate(person);
+                //personValidator.Validate(person);
+                //
             }
             else
             {
-                var person = this.AddPerson(personDto).Result;
-                if (person==null)
-                {
-                    return BadRequest("Aynı kişiyi tekrar ekleyemezsiniz.");
-                }
-
-                personDto.Id = person.Id;
+                return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
             }
-
-
-            // else => ekleme
-
-            return Ok(personDto);
-
-            //return CreatedAtAction("GetPerson", new { id = person.Id }, person);
-
-            //PersonValidator personValidator=new PersonValidator();
-            //ValidationResult results = personValidator.Validate(person);
-            //personValidator.Validate(person);   
         }
 
         // DELETE: api/Persons/5
@@ -147,16 +157,26 @@ namespace ArdRehber.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePerson(int id)
         {
-            var person = await _context.Persons.FindAsync(id);
-            if (person == null)
+            EUserType userTyp = GetUserType();
+            if (userTyp == EUserType.Admin)
             {
-                return NotFound();
+
+                var person = await _context.Persons.FindAsync(id);
+                if (person == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Persons.Remove(person);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
             }
 
-            _context.Persons.Remove(person);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool PersonExists(int id)
