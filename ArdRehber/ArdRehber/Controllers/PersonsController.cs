@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ArdRehber.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PersonsController : ControllerBase
@@ -45,7 +45,7 @@ namespace ArdRehber.Controllers
                 PhoneNumber = personDto.PhoneNumber,
                 InternalNumber = personDto.InternalNumber,
                 DepartmentId = personDto.DepartmentId,
-                UserTypeId = 2
+              
 
             };
 
@@ -65,7 +65,7 @@ namespace ArdRehber.Controllers
             entity.PhoneNumber = personDto.PhoneNumber;
             entity.InternalNumber = personDto.InternalNumber;
             entity.DepartmentId = personDto.DepartmentId;
-            entity.UserTypeId = 2;
+            
             
             _context.Persons.Update(entity);
             await _context.SaveChangesAsync();
@@ -98,7 +98,9 @@ namespace ArdRehber.Controllers
 
         // POST: api/Persons
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+       
+        
+	
         [HttpPost]
         public async Task<ActionResult<Person>> PostPerson(PersonDto personDto)
         {
@@ -141,7 +143,7 @@ namespace ArdRehber.Controllers
         }
 
         // DELETE: api/Persons/5
-        [Authorize]
+       
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePerson(int id)
         {

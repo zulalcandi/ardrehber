@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using ArdRehber.FluentValidation;
 using FluentValidation.Results;
-
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ArdRehber.Controllers
 {
@@ -85,9 +85,20 @@ namespace ArdRehber.Controllers
 
 
         [HttpPost("[action]")]
+
         public async Task<IActionResult> Create([FromForm] UserDto userDto)
         {
+            var token = string.Empty;
+            var header = (string)HttpContext.Request.Headers["Authorization"];
+            if(header!=null) { token=header.Substring(7);}
 
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken =handler.ReadJwtToken(token);
+            //  Console.WriteLine(jwtSecurityToken);
+           int userTyp=int.Parse(jwtSecurityToken.Claims.First(claim => claim.Type == "typ").Value);
+            if (userTyp==1)
+            {
+           
             UserValidator userValidator = new UserValidator();
             ValidationResult results = userValidator.Validate(userDto);
 
@@ -110,7 +121,7 @@ namespace ArdRehber.Controllers
                 Surname = userDto.Surname,
                 Email = userDto.Email,
                 // Password=userDto.Password,
-                UserTypeId = 1                 
+                UserTypeId=userDto.UserTypeId           
                  
                //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
                // RefreshTokenEndDate =new DateTime( 2022,5,29)
@@ -129,6 +140,12 @@ namespace ArdRehber.Controllers
             //userDto.Id = user.Id; 
 
             return Ok(user);
+
+            }
+            else
+            {
+                return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
+            }
         }
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {

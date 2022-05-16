@@ -11,7 +11,7 @@
         //public byte[] PasswordSalt { get; set; }
        
 
-       // public string UserType { get; set; }
+        public int UserTypeId { get; set; }
 
 
 

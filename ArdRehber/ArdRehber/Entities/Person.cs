@@ -24,10 +24,9 @@ namespace ArdRehber.Entities
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
-        public Nullable<int> UserTypeId { get; set; } = null;
+       
 
-        //[ForeignKey("UserTypeId")]
-        public virtual UserType UserType { get; set; }
+       
 
 
     }
