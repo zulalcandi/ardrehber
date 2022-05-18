@@ -66,15 +66,15 @@ namespace ArdRehber.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
-            EUserType userTyp = GetUserType();
-            if (userTyp == EUserType.Admin)
-            {
+            //EUserType userTyp = GetUserType();
+            //if (userTyp == EUserType.Admin)
+            //{
                 return await _context.Departments.ToListAsync(); // INCLUDE BURADA YAPILDI.    Include(x=>x.Persons).
-            }
-            else
-            {
-                return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
-            }
+            //}
+            //else
+            //{
+            //    return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
+            //}
 
         }
 
@@ -82,9 +82,9 @@ namespace ArdRehber.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
-            EUserType userTyp = GetUserType();
-            if (userTyp == EUserType.Admin)
-            {
+            //EUserType userTyp = GetUserType();
+            //if (userTyp == EUserType.Admin)
+            //{
                 var department = await _context.Departments.FindAsync(id);
 
                 if (department == null)
@@ -93,11 +93,11 @@ namespace ArdRehber.Controllers
                 }
 
                 return department;
-            }
-            else
-            {
-                return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
-            }
+            //}
+            //else
+            //{
+            //    return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
+            //}
 
         }
 
