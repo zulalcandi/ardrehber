@@ -21,6 +21,16 @@ namespace ArdRehber.Controllers
             int userTyp = int.Parse(jwtSecurityToken.Claims.First(claim => claim.Type == "typ").Value);
 
             return (EUserType)userTyp;
+
+        }
+
+        protected void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
         }
     }
 }

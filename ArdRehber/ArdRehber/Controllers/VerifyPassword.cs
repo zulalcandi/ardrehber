@@ -9,7 +9,7 @@ namespace ArdRehber.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VerifyPassword : ControllerBase
+    public class VerifyPassword : BaseController
     {
         private readonly DataContext _context;
         string passPhrase = "abc123";
@@ -35,10 +35,10 @@ namespace ArdRehber.Controllers
                 return NotFound();
             }
 
-            UsersController ctr = new UsersController(_context);
+          
 
             byte[] passwordHash, passwordSalt;
-            ctr.CreatePasswordHash(changeForgatPasswordDto.Password, out passwordHash, out passwordSalt);
+            CreatePasswordHash(changeForgatPasswordDto.Password, out passwordHash, out passwordSalt);
 
             kontrolUser.PasswordHash = passwordHash;
             kontrolUser.PasswordSalt = passwordSalt;
