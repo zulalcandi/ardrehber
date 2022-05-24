@@ -1,4 +1,5 @@
 using ArdRehber.Data;
+using ArdRehber.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -75,6 +76,8 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
         });
 });
+
+
 
 
 var app = builder.Build();

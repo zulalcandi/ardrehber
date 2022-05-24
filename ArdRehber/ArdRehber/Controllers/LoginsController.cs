@@ -57,9 +57,6 @@ namespace ArdRehber.Controllers
             _configuration = configuration;
         }
         
-
-
-
         [HttpPost("action")]
         public async Task<Token> Login([FromBody] LoginDto loginDto)
         {
