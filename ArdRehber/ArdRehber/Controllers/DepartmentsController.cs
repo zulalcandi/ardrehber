@@ -62,19 +62,21 @@ namespace ArdRehber.Controllers
             return entity;
         }
 
+        [HttpGet("GetPersonDepartmentById/{id}")]
+        public async Task<List<Person>> PersonDepartment(int id)
+        {
+            var personList =  await _context.Persons.Where(e => e.DepartmentId == id).ToListAsync();
+                                                                                                           
+            return personList;
+        }
+
         // GET: api/Departments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
-            //EUserType userTyp = GetUserType();
-            //if (userTyp == EUserType.Admin)
-            //{
-                return await _context.Departments.ToListAsync(); // INCLUDE BURADA YAPILDI.    Include(x=>x.Persons).
-            //}
-            //else
-            //{
-            //    return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
-            //}
+           
+                return await _context.Departments.ToListAsync(); 
+           
 
         }
 
@@ -82,9 +84,7 @@ namespace ArdRehber.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
-            //EUserType userTyp = GetUserType();
-            //if (userTyp == EUserType.Admin)
-            //{
+            
                 var department = await _context.Departments.FindAsync(id);
 
                 if (department == null)
@@ -93,17 +93,10 @@ namespace ArdRehber.Controllers
                 }
 
                 return department;
-            //}
-            //else
-            //{
-            //    return BadRequest("Bu alana erişim yetkiniz bulunmamaktadır.");
-            //}
+            
 
         }
 
-        
-        // POST: api/Departments
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Department>> PostDepartment(DepartmentDto departmentDto)
         {
@@ -121,7 +114,6 @@ namespace ArdRehber.Controllers
                 if (departmentDto.DepartmentId > 0)
                 {
                     var department = this.UpdateDepartment(departmentDto).Result;
-
 
                 }
                 else
