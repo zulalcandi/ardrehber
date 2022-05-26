@@ -22,6 +22,10 @@ namespace ArdRehber.Controllers
 
         private async Task<Image> AddImage(ImageDto model)
         {
+            if (model.ImageBase64 != null)
+            {
+                return null;
+            }
             Image img = new Image();
             img.UserId = GetUserId();
             img.ImageBase64 = Convert.FromBase64String(model.ImageBase64);
@@ -90,7 +94,11 @@ namespace ArdRehber.Controllers
             else
             {
                 var img = this.AddImage(model).Result;
-           
+                if (img == null)
+                {
+                    return BadRequest("Aynı kullanıcıya birden fazla fotoğraf ekleyemezsiniz.");
+                }
+
                 model.Id = img.Id;
             }
 
