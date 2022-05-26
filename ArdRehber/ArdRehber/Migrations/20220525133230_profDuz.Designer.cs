@@ -4,6 +4,7 @@ using ArdRehber.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArdRehber.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220525133230_profDuz")]
+    partial class profDuz
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,10 +45,7 @@ namespace ArdRehber.Migrations
             modelBuilder.Entity("ArdRehber.Entities.Image", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<byte[]>("ImageBase64")
                         .IsRequired()
@@ -56,8 +55,6 @@ namespace ArdRehber.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Images");
                 });
@@ -165,8 +162,8 @@ namespace ArdRehber.Migrations
             modelBuilder.Entity("ArdRehber.Entities.Image", b =>
                 {
                     b.HasOne("ArdRehber.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithMany("Images")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -191,6 +188,11 @@ namespace ArdRehber.Migrations
                         .HasForeignKey("UserTypeId");
 
                     b.Navigation("UserType");
+                });
+
+            modelBuilder.Entity("ArdRehber.Entities.User", b =>
+                {
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("ArdRehber.Entities.UserType", b =>

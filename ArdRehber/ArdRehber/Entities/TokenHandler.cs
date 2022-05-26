@@ -22,7 +22,7 @@ namespace ArdRehber.Entities
                 new Claim(JwtRegisteredClaimNames.Typ,user.UserTypeId.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName,user.UserType.UserTypeName),
                 new Claim(JwtRegisteredClaimNames.Email,user.Email),
-             
+                new Claim(JwtRegisteredClaimNames.NameId , user.Id.ToString()),
             };
 
             //Security  Key'in simetriğini alıyoruz.
