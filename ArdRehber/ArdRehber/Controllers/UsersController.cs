@@ -32,6 +32,67 @@ namespace ArdRehber.Controllers
             _context = context;
         }
 
+        private async Task<User> AddUser(UserDto userDto)
+        {
+                //int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email);
+
+                if (kontrolUser == true)
+                {
+                    return null;
+                }
+
+                var user = new User()
+                {
+                    Name = userDto.Name,
+                    Surname = userDto.Surname,
+                    Email = userDto.Email,
+                    // Password=userDto.Password,
+                    UserTypeId = userDto.UserTypeId
+
+                    //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
+                    // RefreshTokenEndDate =new DateTime( 2022,5,29)
+
+                };
+
+                byte[] passwordHash, passwordSalt;
+                CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
+
+                user.PasswordHash = passwordHash;
+                user.PasswordSalt = passwordSalt;
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                //userDto.Id = user.Id; 
+
+                return user;
+
+            }
+            
+
+        private async Task<User> UpdateUser(UserDto userDto)
+        {
+            var entity = _context.Users.FirstOrDefault(e => e.Id == userDto.Id);
+
+
+            entity.Name = userDto.Name;
+            entity.Surname = userDto.Surname;
+            entity.Email = userDto.Email;
+            // Password=userDto.Password,
+            entity.UserTypeId = userDto.UserTypeId;
+
+                //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
+                // RefreshTokenEndDate =new DateTime( 2022,5,29)
+
+           
+
+            _context.Users.Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
+
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -89,39 +150,27 @@ namespace ArdRehber.Controllers
                     return BadRequest(results.Errors[0].ErrorMessage);
                 }
 
-                //int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var kontrolUser = await _context.Users.AnyAsync(s => s.Name == userDto.Name && s.Surname == userDto.Surname && s.Email == userDto.Email);
-
-                if (kontrolUser == true)
+                if (userDto.Id > 0)
                 {
-                    return BadRequest("Aynı kullanıcıyı tekrar ekleyemezsiniz.");
+                    var user = this.UpdateUser(userDto).Result;
+                    //  personDto.Id = person.Id;
+
+                }
+                else
+                {
+                    var user = this.AddUser(userDto).Result;
+                    if (user == null)
+                    {
+                        return BadRequest("Aynı kişiyi tekrar ekleyemezsiniz.");
+                    }
+
+                    userDto.Id = user.Id;
                 }
 
-                var user = new User()
-                {
-                    Name = userDto.Name,
-                    Surname = userDto.Surname,
-                    Email = userDto.Email,
-                    // Password=userDto.Password,
-                    UserTypeId = userDto.UserTypeId
 
-                    //  RefreshToken = "ymMWEVXitFQWmOZmHlIOez6fEnFB5ROIIsasmSCPpT8=",
-                    // RefreshTokenEndDate =new DateTime( 2022,5,29)
+                // else => ekleme
 
-                };
-
-                byte[] passwordHash, passwordSalt;
-                CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
-
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
-
-                _context.Users.Add(user);
-                await _context.SaveChangesAsync();
-
-                //userDto.Id = user.Id; 
-
-                return Ok(user);
+                return Ok(userDto);
 
             }
             else
