@@ -12,6 +12,8 @@ namespace ArdRehber.Data
         public DbSet<User> Users { get; set; }
         public DbSet<UserType> UserTypes { get; set; }
         public DbSet<Image> Images { get; set; }
+        public DbSet<Title> Titles { get; set; }
+        public DbSet<TitleDepartment> TitleDepartments { get; set; }
 
         
 

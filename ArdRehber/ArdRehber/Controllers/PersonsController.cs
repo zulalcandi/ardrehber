@@ -46,6 +46,7 @@ namespace ArdRehber.Controllers
                 PhoneNumber = personDto.PhoneNumber,
                 InternalNumber = personDto.InternalNumber,
                 DepartmentId = personDto.DepartmentId,
+                TitleId=personDto.TitleId
               
 
             };
@@ -66,6 +67,7 @@ namespace ArdRehber.Controllers
             entity.PhoneNumber = personDto.PhoneNumber;
             entity.InternalNumber = personDto.InternalNumber;
             entity.DepartmentId = personDto.DepartmentId;
+            entity.TitleId = personDto.TitleId;
             
             
             _context.Persons.Update(entity);

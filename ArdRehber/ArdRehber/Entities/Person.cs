@@ -24,7 +24,17 @@ namespace ArdRehber.Entities
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }
 
-       
+
+        public int? TitleId { get; set; }
+
+        [ForeignKey("TitleId")]
+        public virtual Title Title { get; set; }
+
+
+
+
+
+
 
 
 

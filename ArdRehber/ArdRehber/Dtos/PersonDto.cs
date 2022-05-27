@@ -13,5 +13,7 @@
         public string InternalNumber { get; set; }
 
         public int DepartmentId { get; set; }
+        public int TitleId { get; set; }
+
     }
 }
