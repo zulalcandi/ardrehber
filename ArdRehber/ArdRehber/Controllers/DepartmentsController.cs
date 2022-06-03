@@ -75,10 +75,7 @@ namespace ArdRehber.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
-           
                 return await _context.Departments.ToListAsync(); 
-           
-
         }
 
         // GET: api/Departments/5

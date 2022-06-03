@@ -80,8 +80,10 @@ namespace ArdRehber.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Person>>> GetPersons()
         {
-            return await _context.Persons.Include(x => x.Department).ToListAsync();//Include(x=>x.Department)    İNCLUDE İŞLEMİ sss  Include(x => x.Department).
+            return await _context.Persons.Include(x => x.Department).Include(x=>x.Title).ToListAsync();//Include(x=>x.Department) İNCLUDE İŞLEMİ sss  Include(x => x.Department).
+            
         }
+
 
         // GET: api/Persons/5
         [HttpGet("{id}")]
@@ -91,7 +93,7 @@ namespace ArdRehber.Controllers
 
             if (person == null)
             {
-                return NotFound();
+                 return NotFound();
             }
 
             return person;
@@ -122,7 +124,7 @@ namespace ArdRehber.Controllers
                 if (personDto.Id > 0)
                 {
                     var person = this.UpdatePerson(personDto).Result;
-                    //  personDto.Id = person.Id;
+                      personDto.Id = person.Id;
 
                 }
                 else
