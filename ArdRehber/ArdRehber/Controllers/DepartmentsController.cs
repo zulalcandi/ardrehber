@@ -65,7 +65,7 @@ namespace ArdRehber.Controllers
         [HttpGet("GetPersonDepartmentById/{id}")]
         public async Task<ActionResult<List<Person>>> PersonDepartment(int id)
         {
-            var personList =  await _context.Persons.Where(e => e.DepartmentId == id).Include(x=>x.Title).OrderBy(x=>x.Title.Order).ToListAsync();
+            var personList =  await _context.Persons.Where(e => e.DepartmentId == id).Include(x=>x.Title).Include(x => x.Department).OrderBy(x=>x.Title.Order).ToListAsync();
 
                                                                                                            
             return personList;
