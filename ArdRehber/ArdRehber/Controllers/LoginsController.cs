@@ -58,11 +58,12 @@ namespace ArdRehber.Controllers
         }
         
         [HttpPost("action")]
-        public async Task<Token> Login([FromBody] LoginDto loginDto)
+        public async Task<LoginResponseDto> Login([FromBody] LoginDto loginDto)
         {
             User user = await _context.Users.Include(x => x.UserType).FirstOrDefaultAsync(x => x.Email == loginDto.Email);
             if (user != null)
             {
+                LoginResponseDto responseDto = new LoginResponseDto();
                 if (!VerifyPassword(loginDto.Password, user.PasswordHash, user.PasswordSalt))
                     return null;
 
@@ -70,12 +71,24 @@ namespace ArdRehber.Controllers
                 TokenHandler tokenHandler = new TokenHandler(_configuration);
                 Token token = tokenHandler.CreateAccessToken(user);
 
+                responseDto.AccessToken = token.AccessToken;
+                responseDto.RefreshToken = token.RefreshToken;
+                responseDto.Expiration = token.Expiration;
+                responseDto.UserDto = new UserDto()
+                {
+                    Email = user.Email,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Id = user.Id,
+                    UserTypeName = user.UserType.UserTypeName
+                };
+
                 //Refresh token Users tablosuna işleniyor.
                 user.RefreshToken = token.RefreshToken;
                 user.RefreshTokenEndDate = token.Expiration.AddMinutes(3);
                 await _context.SaveChangesAsync();
 
-                return token;
+                return responseDto;
 
 
             }
