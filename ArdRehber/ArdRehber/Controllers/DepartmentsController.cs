@@ -169,5 +169,17 @@ namespace ArdRehber.Controllers
         {
             return _context.Departments.Any(e => e.DepartmentId == id);
         }
+
+
+        [HttpGet("TitleByDepartmentId/{id}")]
+        public async Task<ActionResult<List<Title>>> TitleByDepartmentId(int id)
+        {
+            var titles = await _context.TitleDepartments
+                .Where(e => e.DepartmentId == id)
+                .Include(x => x.Title)
+                .Select(x=>x.Title)
+                .OrderBy(x => x.Order).ToListAsync();
+            return titles;
+        }
     }
 }
